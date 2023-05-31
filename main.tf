@@ -10,13 +10,13 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_internet_gateway" "main" {
-    vpc_id = aws_vpc.main.id
+  vpc_id = aws_vpc.main.id
 }
 
 resource "aws_subnet" "publicsub1" {
-  vpc_id = aws_vpc.main.id
-  cidr_block = "10.0.0.0/24"
-  availability_zone = "us-east-1a"
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.0.0/24"
+  availability_zone       = "us-east-1a"
   map_public_ip_on_launch = true
 
   tags = {
@@ -25,9 +25,9 @@ resource "aws_subnet" "publicsub1" {
 }
 
 resource "aws_subnet" "publicsub2" {
-  vpc_id = aws_vpc.main.id
-  cidr_block = "10.0.0.0/24"
-  availability_zone = "us-east-1b"
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.0.0/24"
+  availability_zone       = "us-east-1b"
   map_public_ip_on_launch = true
 
   tags = {
@@ -37,19 +37,19 @@ resource "aws_subnet" "publicsub2" {
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
-    tags = {
+  tags = {
     Name = "Akatsuki-publicroutetable"
-    env = "Dev"
-    }
+    env  = "Dev"
+  }
 }
 
 resource "aws_route" "public" {
   route_table_id = aws_route_table.public.id
   destination_cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.main.id
+  gateway_id = aws_internet_gateway.main.id
 }
 
 resource "aws_route_table_association" "publicsubs" {
   route_table_id = aws_route_table.public.id
-  subnet_id = [aws_subnet.public1.id, aws_subnet.public2.id]
+  subnet_id = [aws_subnet.publicsub1.id, aws_subnet.publicsub2.id]
 }
